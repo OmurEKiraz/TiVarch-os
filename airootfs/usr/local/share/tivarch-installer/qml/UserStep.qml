@@ -3,153 +3,201 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Item {
-    id: root
-    signal nextStep(string hostname, string username, string password, bool makeRoot)
-
-    property bool isRootChecked: true
+    id: userStep
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: 720
-        spacing: 24
+        width: 680
+        spacing: 22
 
         ColumnLayout {
             Layout.alignment: Qt.AlignHCenter
             spacing: 6
 
             Text {
-                text: "System Identity & User"
+                text: "Device & User Account"
                 color: "#ffffff"
                 font.pixelSize: 34
-                font.weight: Font.Bold
+                font.bold: true
                 Layout.alignment: Qt.AlignHCenter
             }
 
             Text {
-                text: "Configure the machine hostname and administrative credentials."
+                text: "Set up the local network name and primary login credentials."
                 color: "#7e889b"
                 font.pixelSize: 16
                 Layout.alignment: Qt.AlignHCenter
             }
         }
 
-        // Hostname Field
+        // Computer Hostname
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 6
-            Text { text: "Computer Name (Hostname)"; color: "#a0aec0"; font.pixelSize: 15; font.weight: Font.DemiBold }
+
+            Text {
+                text: "Computer Name (Hostname)"
+                color: "#a0aec0"
+                font.pixelSize: 14
+                font.weight: Font.DemiBold
+            }
+
             TextField {
-                id: hostnameInput
+                id: hostInput
                 Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                text: "tivarch-livingroom"
+                Layout.preferredHeight: 48
+                text: session.hostname
                 color: "#ffffff"
-                font.pixelSize: 16
-                background: Rectangle { color: "#141824"; radius: 8; border.color: "#283149" }
+                font.pixelSize: 15
+                background: Rectangle {
+                    color: "#11141c"
+                    radius: 8
+                    border.color: hostInput.activeFocus ? "#00f5d4" : "#242c3d"
+                }
             }
         }
 
-        // Privilege Option Switcher
+        // Username
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 6
+
+            Text {
+                text: "Username"
+                color: "#a0aec0"
+                font.pixelSize: 14
+                font.weight: Font.DemiBold
+            }
+
+            TextField {
+                id: userInput
+                Layout.fillWidth: true
+                Layout.preferredHeight: 48
+                text: session.username
+                color: "#ffffff"
+                font.pixelSize: 15
+                background: Rectangle {
+                    color: "#11141c"
+                    radius: 8
+                    border.color: userInput.activeFocus ? "#00f5d4" : "#242c3d"
+                }
+            }
+        }
+
+        // Password & Confirm
         RowLayout {
-            spacing: 20
-            Layout.alignment: Qt.AlignHCenter
-
-            Button {
-                text: "Root Account Setup"
-                Layout.preferredWidth: 200
-                Layout.preferredHeight: 44
-                background: Rectangle {
-                    color: root.isRootChecked ? "#00f5d4" : "#141824"
-                    radius: 8
-                }
-                contentItem: Text {
-                    text: parent.text
-                    color: root.isRootChecked ? "#07090e" : "#a0aec0"
-                    font.weight: Font.Bold
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: root.isRootChecked = true
-            }
-
-            Button {
-                text: "Standard User (Sudoer)"
-                Layout.preferredWidth: 200
-                Layout.preferredHeight: 44
-                background: Rectangle {
-                    color: !root.isRootChecked ? "#00f5d4" : "#141824"
-                    radius: 8
-                }
-                contentItem: Text {
-                    text: parent.text
-                    color: !root.isRootChecked ? "#07090e" : "#a0aec0"
-                    font.weight: Font.Bold
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: root.isRootChecked = false
-            }
-        }
-
-        // Username Field (Visible only if not configuring pure root)
-        ColumnLayout {
             Layout.fillWidth: true
-            spacing: 6
-            visible: !root.isRootChecked
+            spacing: 16
 
-            Text { text: "Username"; color: "#a0aec0"; font.pixelSize: 15; font.weight: Font.DemiBold }
-            TextField {
-                id: usernameInput
+            ColumnLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                placeholderText: "e.g. tivuser"
-                text: "tivuser"
-                color: "#ffffff"
-                font.pixelSize: 16
-                background: Rectangle { color: "#141824"; radius: 8; border.color: "#283149" }
+                spacing: 6
+
+                Text {
+                    text: "Password"
+                    color: "#a0aec0"
+                    font.pixelSize: 14
+                    font.weight: Font.DemiBold
+                }
+
+                TextField {
+                    id: passInput
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 48
+                    echoMode: TextInput.Password
+                    color: "#ffffff"
+                    font.pixelSize: 15
+                    background: Rectangle {
+                        color: "#11141c"
+                        radius: 8
+                        border.color: passInput.activeFocus ? "#00f5d4" : "#242c3d"
+                    }
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 6
+
+                Text {
+                    text: "Confirm Password"
+                    color: "#a0aec0"
+                    font.pixelSize: 14
+                    font.weight: Font.DemiBold
+                }
+
+                TextField {
+                    id: confirmInput
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 48
+                    echoMode: TextInput.Password
+                    color: "#ffffff"
+                    font.pixelSize: 15
+                    background: Rectangle {
+                        color: "#11141c"
+                        radius: 8
+                        border.color: confirmInput.activeFocus ? "#00f5d4" : "#242c3d"
+                    }
+                }
             }
         }
 
-        // Password Field
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 6
-            Text { text: root.isRootChecked ? "Root Password (leave blank for passwordless)" : "User Password (leave blank for passwordless)"; color: "#a0aec0"; font.pixelSize: 15 }
-            TextField {
-                id: passwordInput
-                Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                placeholderText: "Password (Optional)"
-                echoMode: TextInput.Password
-                color: "#ffffff"
-                font.pixelSize: 16
-                background: Rectangle { color: "#141824"; radius: 8; border.color: "#283149" }
-            }
-        }
-
-        Button {
+        // Password mismatch notice
+        Text {
+            visible: passInput.text !== confirmInput.text && confirmInput.text.length > 0
+            text: "Passwords do not match."
+            color: "#e63946"
+            font.pixelSize: 14
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 260
-            Layout.preferredHeight: 54
+        }
+
+        // Navigation Action Buttons
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 12
+            spacing: 16
 
-            background: Rectangle {
-                radius: 27
-                color: "#00f5d4"
+            Button {
+                Layout.preferredWidth: 160
+                Layout.preferredHeight: 50
+                background: Rectangle {
+                    radius: 25
+                    color: "#161b24"
+                    border.color: "#283345"
+                }
+                contentItem: Text {
+                    text: "Back"
+                    color: "#a0aec0"
+                    font.pixelSize: 16
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: navStack.pop()
             }
 
-            contentItem: Text {
-                text: "Confirm & Proceed"
-                color: "#07090e"
-                font.pixelSize: 17
-                font.weight: Font.Bold
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            onClicked: {
-                var user = root.isRootChecked ? "root" : usernameInput.text
-                root.nextStep(hostnameInput.text, user, passwordInput.text, root.isRootChecked)
+            Button {
+                Layout.preferredWidth: 220
+                Layout.preferredHeight: 50
+                enabled: (passInput.text === confirmInput.text) && (userInput.text.trim().length > 0)
+                background: Rectangle {
+                    radius: 25
+                    color: parent.enabled ? "#00f5d4" : "#1e2433"
+                }
+                contentItem: Text {
+                    text: "Choose Disk"
+                    color: parent.enabled ? "#07090e" : "#555"
+                    font.pixelSize: 16
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: {
+                    session.hostname = hostInput.text.trim() || "tivarch-tv"
+                    session.username = userInput.text.trim().toLowerCase() || "tivuser"
+                    session.password = passInput.text
+                    navStack.push("DiskStep.qml")
+                }
             }
         }
     }

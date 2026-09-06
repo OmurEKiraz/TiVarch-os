@@ -2,132 +2,253 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ColumnLayout {
-    id: root
-    spacing: 24
-    Layout.fillWidth: true
-
-    signal nextStep()
+Item {
+    id: wifiStep
 
     Component.onCompleted: {
         backend.updateNetworkStatus()
         backend.scanWifi()
     }
 
-    Text {
-        text: "Network Connection"
-        color: "#ffffff"
-        font.pixelSize: 36
-        font.bold: true
-        Layout.alignment: Qt.AlignHCenter
-    }
+    ColumnLayout {
+        anchors.centerIn: parent
+        width: 820
+        spacing: 24
 
-    // Status Banner (Detects Ethernet vs Wi-Fi)
-    Rectangle {
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 800
-        Layout.preferredHeight: 60
-        radius: 10
-        color: backend.netType === "Offline" ? "#2a151b" : "#0d2621"
-        border.color: backend.netType === "Offline" ? "#e63946" : "#00f5d4"
+        // Screen Title & Subtitle
+        ColumnLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 6
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 16
-            spacing: 16
-
-            Rectangle {
-                width: 12; height: 12; radius: 6
-                color: backend.netType === "Offline" ? "#e63946" : "#00f5d4"
+            Text {
+                text: "Connect to Network"
+                color: "#ffffff"
+                font.pixelSize: 34
+                font.bold: true
+                Layout.alignment: Qt.AlignHCenter
             }
 
             Text {
-                text: "Network Status: " + backend.netType + " (" + backend.netDetails + ")"
-                color: "#ffffff"
+                text: "An active internet connection is required to fetch base packages."
+                color: "#7e889b"
                 font.pixelSize: 16
-                font.weight: Font.DemiBold
-                Layout.fillWidth: true
-            }
-
-            Button {
-                text: "Refresh"
-                Layout.preferredHeight: 36
-                background: Rectangle { color: "#161b24"; radius: 6 }
-                contentItem: Text { text: "Refresh"; color: "#00f5d4"; font.weight: Font.Bold }
-                onClicked: {
-                    backend.updateNetworkStatus()
-                    backend.scanWifi()
-                }
+                Layout.alignment: Qt.AlignHCenter
             }
         }
-    }
 
-    ListView {
-        id: wifiList
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 800
-        Layout.preferredHeight: 220
-        spacing: 8
-        clip: true
-        model: backend.wifiList
-
-        delegate: Rectangle {
-            width: wifiList.width
-            height: 52
-            radius: 8
-            color: wifiList.currentIndex === index ? "#1a2333" : "#10141d"
-            border.color: wifiList.currentIndex === index ? "#00f5d4" : "#1c2331"
+        // Live Network Status Card
+        Rectangle {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: parent.width
+            Layout.preferredHeight: 58
+            radius: 10
+            color: backend.netType === "Offline" ? "#1e1317" : "#0f231e"
+            border.color: backend.netType === "Offline" ? "#e63946" : "#00f5d4"
+            border.width: 1
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 12
+                anchors.leftMargin: 20
+                anchors.rightMargin: 16
                 spacing: 14
 
-                Text { text: modelData.ssid; color: "#ffffff"; font.pixelSize: 16; Layout.fillWidth: true }
-                Text { text: modelData.signal + "% • " + modelData.security; color: "#718096"; font.pixelSize: 14 }
-            }
+                Rectangle {
+                    width: 10
+                    height: 10
+                    radius: 5
+                    color: backend.netType === "Offline" ? "#e63946" : "#00f5d4"
+                }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: wifiList.currentIndex = index
+                Text {
+                    text: backend.netType === "Offline" 
+                          ? "Offline — Connect to Wi-Fi or plug in Ethernet" 
+                          : "Online: " + backend.netType + " (" + backend.netDetails + ")"
+                    color: "#ffffff"
+                    font.pixelSize: 15
+                    font.weight: Font.Medium
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    text: "Rescan"
+                    Layout.preferredHeight: 34
+                    Layout.preferredWidth: 90
+                    background: Rectangle {
+                        color: "#18202c"
+                        radius: 6
+                        border.color: "#273347"
+                    }
+                    contentItem: Text {
+                        text: "Rescan"
+                        color: "#00f5d4"
+                        font.pixelSize: 13
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    onClicked: {
+                        backend.updateNetworkStatus()
+                        backend.scanWifi()
+                    }
+                }
             }
         }
-    }
 
-    RowLayout {
-        Layout.alignment: Qt.AlignHCenter
-        spacing: 14
-        visible: wifiList.currentIndex >= 0
+        // Wi-Fi Access Points List
+        ListView {
+            id: wifiView
+            Layout.preferredWidth: parent.width
+            Layout.preferredHeight: 240
+            spacing: 8
+            clip: true
+            model: backend.wifiList
 
-        TextField {
-            id: passInput
-            Layout.preferredWidth: 380
-            Layout.preferredHeight: 48
-            placeholderText: "Wi-Fi Password"
-            echoMode: TextInput.Password
-            color: "#ffffff"
-            background: Rectangle { color: "#151924"; radius: 8; border.color: "#293247" }
-        }
+            delegate: Rectangle {
+                width: wifiView.width
+                height: 52
+                radius: 8
+                color: wifiView.currentIndex === index ? "#162235" : "#11141c"
+                border.color: wifiView.currentIndex === index ? "#00f5d4" : "#1c222e"
+                border.width: wifiView.currentIndex === index ? 2 : 1
 
-        Button {
-            Layout.preferredHeight: 48
-            Layout.preferredWidth: 140
-            text: "Connect"
-            background: Rectangle { color: "#00f5d4"; radius: 8 }
-            contentItem: Text { text: "Connect"; color: "#07090e"; font.bold: true; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-            onClicked: {
-                var selected = wifiList.model[wifiList.currentIndex]
-                backend.connectWifi(selected.ssid, passInput.text)
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 18
+                    anchors.rightMargin: 18
+                    spacing: 12
+
+                    Text {
+                        text: modelData.ssid
+                        color: "#ffffff"
+                        font.pixelSize: 16
+                        font.weight: Font.Medium
+                        Layout.fillWidth: true
+                        elide: Text.ElideRight
+                    }
+
+                    Text {
+                        text: modelData.signal + "%  •  " + modelData.security
+                        color: "#748096"
+                        font.pixelSize: 14
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        wifiView.currentIndex = index
+                        passField.forceActiveFocus()
+                    }
+                }
             }
         }
-    }
 
-    Button {
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredHeight: 52
-        Layout.preferredWidth: 220
-        background: Rectangle { color: "#3a86ff"; radius: 26 }
-        contentItem: Text { text: "Proceed"; color: "#ffffff"; font.pixelSize: 17; font.weight: Font.Bold; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-        onClicked: root.nextStep()
+        // Selected Network Password & Connect Row with Show/Hide Toggle
+        RowLayout {
+            Layout.preferredWidth: parent.width
+            spacing: 12
+            visible: wifiView.currentIndex >= 0 && wifiView.count > 0
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 50
+                color: "#11141c"
+                radius: 8
+                border.color: passField.activeFocus ? "#00f5d4" : "#242c3d"
+                border.width: 1
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 10
+                    spacing: 8
+
+                    TextField {
+                        id: passField
+                        Layout.fillWidth: true
+                        placeholderText: "Enter Wi-Fi Password (leave empty if open)"
+                        placeholderTextColor: "#4a5568"
+                        echoMode: togglePassBtn.passwordVisible ? TextInput.Normal : TextInput.Password
+                        color: "#ffffff"
+                        font.pixelSize: 15
+                        background: null
+                    }
+
+                    // Show / Hide Password Button
+                    Button {
+                        id: togglePassBtn
+                        property bool passwordVisible: false
+                        Layout.preferredWidth: 70
+                        Layout.preferredHeight: 34
+                        background: Rectangle {
+                            color: togglePassBtn.down ? "#222c3c" : "#161b26"
+                            radius: 6
+                            border.color: togglePassBtn.passwordVisible ? "#00f5d4" : "#2d3748"
+                            border.width: 1
+                        }
+                        contentItem: Text {
+                            text: togglePassBtn.passwordVisible ? "Hide" : "Show"
+                            color: togglePassBtn.passwordVisible ? "#00f5d4" : "#a0aec0"
+                            font.pixelSize: 12
+                            font.bold: true
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        onClicked: {
+                            passwordVisible = !passwordVisible
+                        }
+                    }
+                }
+            }
+
+            Button {
+                Layout.preferredHeight: 50
+                Layout.preferredWidth: 140
+                background: Rectangle {
+                    color: "#162235"
+                    radius: 8
+                    border.color: "#00f5d4"
+                }
+                contentItem: Text {
+                    text: "Connect"
+                    color: "#00f5d4"
+                    font.pixelSize: 15
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: {
+                    if (wifiView.currentIndex >= 0) {
+                        var targetSSID = backend.wifiList[wifiView.currentIndex].ssid
+                        backend.connectWifi(targetSSID, passField.text)
+                    }
+                }
+            }
+        }
+
+        // Bottom Action Row
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: 12
+            spacing: 20
+
+            Button {
+                Layout.preferredWidth: 260
+                Layout.preferredHeight: 52
+                background: Rectangle {
+                    radius: 26
+                    color: "#00f5d4"
+                }
+                contentItem: Text {
+                    text: "Continue"
+                    color: "#07090e"
+                    font.pixelSize: 17
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: navStack.push("LocaleStep.qml")
+            }
+        }
     }
 }

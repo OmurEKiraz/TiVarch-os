@@ -1,8 +1,8 @@
-# --- Base System & Core Utilities ---
+# --- Base System & Core Toolchain ---
 base
 linux-lts
-linux-lts-headers
 linux-firmware
+syslinux
 amd-ucode
 intel-ucode
 mkinitcpio
@@ -21,25 +21,25 @@ pv
 curl
 nano
 
-# --- Bootloader & EFI ---
+# --- Bootloader & Target Tools ---
 grub
 efibootmgr
-syslinux
 
-# --- Networking & Hardware Stack ---
+# --- Networking & Device Stack ---
 networkmanager
-iwd
 wireless-regdb
-bluez
-bluez-utils
+polkit
+seatd
+
+# --- Audio Stack ---
 pipewire
 pipewire-pulse
 wireplumber
+
+# --- GPU Acceleration (Needed for Smooth QML/Wayland UI) ---
 mesa
 vulkan-intel
 vulkan-radeon
-sof-firmware
-alsa-utils
 
 # --- Wayland Kiosk & Installer Runtime ---
 cage
@@ -50,5 +50,4 @@ python
 pyside6
 qt6-declarative
 qt6-svg
- 
 noto-fonts
