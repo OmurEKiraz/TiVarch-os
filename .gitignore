@@ -1,0 +1,21 @@
+# Build artifacts and work trees
+work/
+out/
+*.iso
+*.qcow2
+*.raw
+*.img
+
+# Firmware and runtime state files
+*.fd
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Logs and local backups
+*.log
+*~
+*.swp

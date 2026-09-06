@@ -1,0 +1,8 @@
+# mkinitcpio preset file for TiVarch LTS archiso
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-linux-lts"
+
+PRESETS=('default')
+
+default_config="/etc/mkinitcpio.conf.d/archiso.conf"
+default_image="/boot/initramfs-linux-lts.img"

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+export XDG_RUNTIME_DIR=/tmp/runtime-root
+mkdir -p -m 0700 "$XDG_RUNTIME_DIR"
+
+# Let logind manage the seat via systemd
+unset LIBSEAT_BACKEND
+export XDG_SEAT=seat0
+
+# Let wlroots automatically select the active DRM device
+unset WLR_DRM_DEVICES
+
+# Set keyboard layouts for Cage
+export XKB_DEFAULT_LAYOUT=tr,us
+export XKB_DEFAULT_OPTIONS=grp:alt_shift_toggle
+
+export QT_QPA_PLATFORM=wayland
+
+exec cage -d -s -- python3 /usr/local/share/tivarch-installer/main.py

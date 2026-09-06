@@ -1,0 +1,54 @@
+# --- Base System & Core Utilities ---
+base
+linux-lts
+linux-lts-headers
+linux-firmware
+amd-ucode
+intel-ucode
+mkinitcpio
+mkinitcpio-archiso
+sudo
+bash
+coreutils
+util-linux
+arch-install-scripts
+e2fsprogs
+dosfstools
+btrfs-progs
+parted
+rsync
+pv
+curl
+nano
+
+# --- Bootloader & EFI ---
+grub
+efibootmgr
+syslinux
+
+# --- Networking & Hardware Stack ---
+networkmanager
+iwd
+wireless-regdb
+bluez
+bluez-utils
+pipewire
+pipewire-pulse
+wireplumber
+mesa
+vulkan-intel
+vulkan-radeon
+sof-firmware
+alsa-utils
+
+# --- Wayland Kiosk & Installer Runtime ---
+cage
+xorg-xwayland
+wayland-protocols
+qt6-wayland
+python
+pyside6
+qt6-declarative
+qt6-svg
+ 
+noto-fonts
