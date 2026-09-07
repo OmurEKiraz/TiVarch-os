@@ -2,7 +2,7 @@
 # shellcheck disable=SC2034
 
 iso_label="TIVARCH"
-iso_publisher="OmurEKiraz <omrkrz0678@gmail.com>"
+iso_publisher="OmurEKiraz <tivarchos@gmail.com>"
 iso_application="TiVarch Arch based SmartTV Distro"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
